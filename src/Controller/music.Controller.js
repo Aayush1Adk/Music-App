@@ -61,7 +61,7 @@ const createAlbum = async(req, res)=>{
 const getAllMusic = async(req, res) => {
 
     try{    
-    const musics = await musicModel.find()
+    const musics = await musicModel.find().populate("artist","username")
 
     res.status(200).json({
         message: "Music fetched Successfully",
@@ -75,4 +75,21 @@ catch(err){
 
 }
 
-module.exports = {createMusic, createAlbum, getAllMusic} 
+const getAllAlbum = async(req, res) => {
+    try{
+        const albums = await albumModel.find()
+            .populate("artist","username")
+            .populate("musics","title uri")
+
+        res.status(200).json({
+            message:"Album fetched Successfully",
+            albums : albums,
+        })
+    }
+    catch(err){
+        console.log(err)
+        res.status(400).json({message:"error at albums"})
+    }
+}
+
+module.exports = {createMusic, createAlbum, getAllMusic, getAllAlbum} 
