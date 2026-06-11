@@ -11,4 +11,10 @@ app.use("/api/auth", authRouter);
 app.use("/api/music", musicRouter);
 
 
+//just to test the jest supertest
+
+app.get('/', (req, res) => {
+    res.status(200).json({message: "Hello its a jest test only"});
+});
+
 module.exports = app;
