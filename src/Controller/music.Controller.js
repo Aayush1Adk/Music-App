@@ -109,4 +109,41 @@ const getAlbumById = async(req, res) => {
     }
 }
 
-module.exports = {createMusic, createAlbum, getAllMusic, getAllAlbum, getAlbumById} 
+const deleteMusic = async(req, res) => {
+
+    const musicId = req.params.musicId
+    try{
+        const music = await musicModel.findByIdAndDelete(musicId)
+        res.status(200).json({
+            message:"Music deleted Successfully",
+            music : music,
+        })
+    }
+    catch(err){
+        res.status(400).json({message:"error at delete music"})
+    }
+}
+
+
+const updateAlbum = async(req, res) => {
+
+    const albumId = req.params.albumId
+    const {title} = req.body
+
+    try{
+        const album = await albumModel.findByIdAndUpdate(albumId, {title}, {new: true})
+
+        res.status(200).json({
+            message:"Album updated Successfully",
+            album : album,
+        })
+    }
+
+    catch(err){
+        res.status(400).json({message:"error at update album"})
+    }
+}
+
+
+
+module.exports = {createMusic, createAlbum, getAllMusic, getAllAlbum, getAlbumById, deleteMusic, updateAlbum} 
