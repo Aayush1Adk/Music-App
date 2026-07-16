@@ -16,4 +16,6 @@ router.get("/getalbum",authMiddleware.authUser, musicController.getAllAlbum);
 router.get("/getalbum/:albumId", authMiddleware.authUser, musicController.getAlbumById)
 router.put("/updatealbum/:albumId", authMiddleware.authArtist, musicController.updateAlbum)
 router.delete("/deletemusic/:musicId", authMiddleware.authArtist, musicController.deleteMusic)
+router.get("/search", authMiddleware.authUser, musicController.searchEverything);
+
 module.exports = router

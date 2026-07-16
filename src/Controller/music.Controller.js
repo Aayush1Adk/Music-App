@@ -4,29 +4,36 @@ const {UploadMusic} = require("../Services/storage.service.js")
 const albumModel = require("../Models/albums.model.js");
 const userModel = require("../Models/user.model.js");
 
-const createMusic = async(req, res)=>{
-    
-    try{
-   
-    const {title} = req.body;
-    const uri = req.file.path;
-    
-    const audio = await UploadMusic(req.file.buffer, req.file.mimetype)// use of 
+const createMusic = async (req, res) => {
+  try {
+    const { title } = req.body;
 
-    const music = await musicModel.create({
-        uri: audio.secure_url,
-        title,
-        artist: req.user.id, 
-    })
-
-    res.status(201).json({message:"Music Created Successfully", music});
-
-     }
-    catch(err){
-        res.status(400).json({message:"Error"})
+    if (!title) {
+      return res.status(400).json({
+        message: "Title is required"
+      });
     }
 
-}
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Music file is required"
+      });
+    }
+
+    const audio = await UploadMusic(req.file.buffer, req.file.mimetype);
+
+    const music = await musicModel.create({
+      uri: audio.secure_url,
+      title,
+      artist: req.user.id,
+    });
+
+    res.status(201).json({ message: "Music Created Successfully", music });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: "Error" });
+  }
+};
 
 const createAlbum = async(req, res)=>{
 
