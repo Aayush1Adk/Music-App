@@ -2,6 +2,7 @@ const musicModel = require("../Models/music.model.js");
 const jwt = require("jsonwebtoken");
 const {UploadMusic} = require("../Services/storage.service.js")
 const albumModel = require("../Models/albums.model.js");
+const userModel = require("../Models/user.model.js");
 
 const createMusic = async(req, res)=>{
     
@@ -58,14 +59,32 @@ const createAlbum = async(req, res)=>{
 
 }
 
+
+
 const getAllMusic = async(req, res) => {
 
     try{    
-    const musics = await musicModel.find().limit(15).populate("artist","username")
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const [musics, totalMusics] = await Promise.all([
+            musicModel.find().sort({ createdAt: -1, title: 1 }).skip(skip).limit(limit).populate("artist","username"),
+            musicModel.countDocuments()
+        ])
+
+        const totalPages = Math.ceil(totalMusics / limit);
 
     res.status(200).json({
         message: "Music fetched Successfully",
-        musics : musics,
+        musics,
+        pagination: {
+                totalItems: totalMusics,
+                currentPage: page,
+                itemsPerPage: limit,
+                totalPages
+            }
     })
 }
 catch(err){
@@ -109,18 +128,37 @@ const getAlbumById = async(req, res) => {
     }
 }
 
-const deleteMusic = async(req, res) => {
+const deleteMusic = async (req, res) => {
 
-    const musicId = req.params.musicId
-    try{
-        const music = await musicModel.findByIdAndDelete(musicId)
+    const musicId = req.params.musicId;
+
+    try {
+
+        const music = await musicModel.findById(musicId);
+
+        if (!music) {
+            return res.status(404).json({
+                message: "Music not found"
+            });
+        }
+
+        if (music.artist.toString() !== req.user.id) {
+            return res.status(403).json({
+                message: "Unauthorized"
+            });
+        }
+
+        await music.deleteOne();
+
         res.status(200).json({
-            message:"Music deleted Successfully",
-            music : music,
-        })
-    }
-    catch(err){
-        res.status(400).json({message:"error at delete music"})
+            message: "Music deleted successfully"
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            message: "Error deleting music"
+        });
     }
 }
 
@@ -145,5 +183,56 @@ const updateAlbum = async(req, res) => {
 }
 
 
+const searchEverything = async(req, res) => {
+    try{
+const searchTerm = req.query.q
 
-module.exports = {createMusic, createAlbum, getAllMusic, getAllAlbum, getAlbumById, deleteMusic, updateAlbum} 
+if (!searchTerm) {
+    return res.status(400).json({
+        message: "Search term required"
+    });
+}
+
+const userResults = await userModel.find({
+    username: {
+        $regex: searchTerm,
+        $options: "i"
+    },
+    role: "artist"
+});
+
+const artistIDs = userResults.map(user => user._id);
+
+const musicResults = await musicModel.find({
+    $or: [
+        {title: {$regex: searchTerm, $options: "i"}},
+        {artist: {$in: artistIDs}}
+    ]
+}).populate("artist","username")
+
+const albumResults = await albumModel.find({
+    $or: [
+        {title: {$regex: searchTerm, $options: "i"}},
+        {artist: {$in: artistIDs}}
+    ]
+}).populate("artist","username").select("-musics")
+
+
+
+res.status(200).json({
+    message: "Search results",
+    musics: musicResults,
+    albums: albumResults,
+    users: userResults
+})
+    }
+
+catch(err){
+    console.log(err)
+    res.status(500).json({message:"error at search"})
+
+}
+}
+
+
+module.exports = {createMusic, createAlbum, getAllMusic, getAllAlbum, getAlbumById, deleteMusic, updateAlbum, searchEverything};
