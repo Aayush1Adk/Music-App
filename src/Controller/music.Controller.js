@@ -117,6 +117,22 @@ const getAllAlbum = async(req, res) => {
     }
 }
 
+const getMusicById = async(req, res) => {
+    const musicId = req.params.musicId
+
+    try{
+        const music = await musicModel.findById(musicId).populate("artist","username email").populate("musics")
+        res.status(200).json({
+            message:"Music fetched Successfully",
+            music : music,
+        })
+    }
+    catch(err){
+        console.log(err)
+        res.status(400).json({message:"error at get music by id"})
+    }
+}
+
 const getAlbumById = async(req, res) => {
 
     const albumId = req.params.albumId
@@ -249,4 +265,4 @@ catch(err){
 }
 
 
-module.exports = {createMusic, createAlbum, getAllMusic, getAllAlbum, getAlbumById, deleteMusic, updateAlbum, searchEverything};
+module.exports = {createMusic, createAlbum, getAllMusic, getMusicById, getAllAlbum, getAlbumById, deleteMusic, updateAlbum, searchEverything};

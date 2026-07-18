@@ -17,6 +17,7 @@ router.post("/album", authMiddleware.authArtist ,musicController.createAlbum);
 router.get("/", authMiddleware.authUser, musicController.getAllMusic);
 router.get("/search", authMiddleware.authUser, musicController.searchEverything);
 router.get("/getalbum",authMiddleware.authUser, musicController.getAllAlbum);
+router.get("/getmusic/:musicId", authMiddleware.authUser, musicController.getMusicById)
 router.get("/getalbum/:albumId", authMiddleware.authUser, musicController.getAlbumById)
 router.put("/updatealbum/:albumId", authMiddleware.authArtist, musicController.updateAlbum)
 router.delete("/deletemusic/:musicId", authMiddleware.authArtist, musicController.deleteMusic)
