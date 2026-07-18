@@ -5,28 +5,25 @@ const userModel = require("../Models/user.model.js");
 
 const createMusic = async (req, res) => {
     try {
-    const { title } = req.body;
-    const{ files} = req.file;
+    const { title, genres } = req.body;
 
-        if (!title) {
-        return res.status(400).json({
-        message: "Title is required"
-        });
-    }
+    if (!req.files || !req.files['audio'] || !req.files['cover']) {
+            return res.status(400).json({ message: "Both music and cover files are required." });
+        }
 
-        if (!files) {
-        return res.status(400).json({
-        message: "Music file is required"
-        });
-    }
+        const audioFile = req.files['audio'][0];
+        const coverFile = req.files['cover'][0];
 
-    const audio = await UploadMusic(req.file.buffer, req.file.mimetype);
-    const cover = await UploadImage(req.body.coverBuffer, req.body.mimetype);
+    const [audioResult, coverResult] = await Promise.all([
+            UploadMusic(audioFile.buffer, audioFile.mimetype),
+            UploadImage(coverFile.buffer, coverFile.mimetype)
+        ]);
 
     const music = await musicModel.create({
-        uri: audio.secure_url,
-        coverUri: cover.secure_url,
+        uri: audioResult.secure_url,
+        coverUri: coverResult.secure_url,
         title,
+        genres: genres ? JSON.parse(genres) : [],
         artist: req.user.id,
     });
 
@@ -42,26 +39,26 @@ const createAlbum = async(req, res)=>{
     try{
         
         const {title , musics} = req.body;
-        const cover = await UploadImage(req.body.coverBuffer, req.body.mimetype);
+        const coverFile = req.file;
+        
 
-        const album = await albumModel.create({
+        if (!coverFile) {
+            return res.status(400).json({ message: "Album cover image is required" });
+        }
+
+        if (!title) return res.status(400).json({ message: "Album title is required" });
+
+        const coverResult = await UploadImage(    coverFile.buffer, coverFile.mimetype);
+
+const album = await albumModel.create({
             title,
-            coverUri: cover.secure_url,
+            coverUri: coverResult.secure_url,
             artist: req.user.id,
-            musics: musics
-        })
+            musics: musics ? JSON.parse(musics) : []
+            });
 
-        res.status(201).json({message:"Created Successfully",
-            album: {
-            id: album._id,
-            title: album.title,
-            artist: album.artist,
-            musics: album.musics 
-            }
-
-        })
+        res.status(201).json({message:"Created Successfully", album})
     }
-
 
     catch(err){
         console.log(err);
@@ -177,6 +174,13 @@ const updateAlbum = async(req, res) => {
 
     const albumId = req.params.albumId
     const {title} = req.body
+    const music = await musicModel.findById(musicId);
+
+            if (music.artist.toString() !== req.user.id) {
+            return res.status(403).json({
+                message: "Unauthorized"
+            });
+        }
 
     try{
         const album = await albumModel.findByIdAndUpdate(albumId, {title}, {new: true})
