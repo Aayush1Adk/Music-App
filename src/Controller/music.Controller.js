@@ -1,38 +1,40 @@
 const musicModel = require("../Models/music.model.js");
-const jwt = require("jsonwebtoken");
-const {UploadMusic} = require("../Services/storage.service.js")
+const {UploadMusic, UploadImage} = require("../Services/storage.service.js")
 const albumModel = require("../Models/albums.model.js");
 const userModel = require("../Models/user.model.js");
 
 const createMusic = async (req, res) => {
-  try {
+    try {
     const { title } = req.body;
+    const{ files} = req.file;
 
-    if (!title) {
-      return res.status(400).json({
+        if (!title) {
+        return res.status(400).json({
         message: "Title is required"
-      });
+        });
     }
 
-    if (!req.file) {
-      return res.status(400).json({
+        if (!files) {
+        return res.status(400).json({
         message: "Music file is required"
-      });
+        });
     }
 
     const audio = await UploadMusic(req.file.buffer, req.file.mimetype);
+    const cover = await UploadImage(req.body.coverBuffer, req.body.mimetype);
 
     const music = await musicModel.create({
-      uri: audio.secure_url,
-      title,
-      artist: req.user.id,
+        uri: audio.secure_url,
+        coverUri: cover.secure_url,
+        title,
+        artist: req.user.id,
     });
 
     res.status(201).json({ message: "Music Created Successfully", music });
-  } catch (err) {
+    }  catch (err) {
     console.log(err);
     res.status(400).json({ message: "Error" });
-  }
+    }
 };
 
 const createAlbum = async(req, res)=>{
@@ -40,9 +42,11 @@ const createAlbum = async(req, res)=>{
     try{
         
         const {title , musics} = req.body;
+        const cover = await UploadImage(req.body.coverBuffer, req.body.mimetype);
 
         const album = await albumModel.create({
             title,
+            coverUri: cover.secure_url,
             artist: req.user.id,
             musics: musics
         })
@@ -65,7 +69,6 @@ const createAlbum = async(req, res)=>{
     }
 
 }
-
 
 
 const getAllMusic = async(req, res) => {

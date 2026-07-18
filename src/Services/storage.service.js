@@ -21,4 +21,17 @@ console.log("Cloudinary Configured");
 return result;
 }
 
-module.exports = {UploadMusic}
+async function UploadImage(coverBuffer, mimetype){
+        const imagebase64String = coverBuffer.toString("base64");
+    const imagedataURI = `data:${mimetype};base64,` + imagebase64String;
+
+const imageresult = await cloudinary.uploader.upload(imagedataURI, {
+    public_id: "Cover_" + Date.now(),
+    folder: "SpotifyClone/Cover",
+    resource_type:"auto"
+})
+
+return imageresult;
+}
+
+module.exports = {UploadMusic, UploadImage}

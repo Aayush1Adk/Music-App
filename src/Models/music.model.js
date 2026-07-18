@@ -5,10 +5,18 @@ const musicSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+
+    coverUri:{
+        type: String,
+        required: true
+    },
+
     title:{
         type: String,
         required: true
     },
+    Genre: [string],
+    
     artist:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
