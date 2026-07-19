@@ -2,6 +2,7 @@ const musicModel = require("../Models/music.model.js");
 const {UploadMusic, UploadImage} = require("../Services/storage.service.js")
 const albumModel = require("../Models/albums.model.js");
 const userModel = require("../Models/user.model.js");
+const likeModel = require("../Models/like.model.js")
 
 const createMusic = async (req, res) => {
     try {
@@ -33,6 +34,39 @@ const createMusic = async (req, res) => {
     res.status(400).json({ message: "Error" });
     }
 };
+
+const likeMusic = async (req, res) =>{
+
+    const userId = req.user.id
+    const musicId = req.params.musicId;
+
+    try{
+        const music = await likeModel.findById(musicId)
+
+        if(!music){
+            return res.status(204).json({message:"Already liked"})
+        }
+
+        const likeMusic = await likeModel.create({
+            user: userId,
+            music: musicId
+        });
+    }
+    catch(err){
+        console.log(err);
+        res.status(400).json({ message: "Error" });
+    }
+}
+
+const UnlikeMusic = async (req, res)=>{
+
+    const musicId =  req.params.musicId;
+
+    const unlikeMusic = await likeModel.findByIdAndDelete(musicId)
+    res.status(200).json({ message: "Unliked a song"})
+
+}
+
 
 const createAlbum = async(req, res)=>{
 
