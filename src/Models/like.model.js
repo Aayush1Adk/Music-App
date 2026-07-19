@@ -17,6 +17,11 @@ const likeSchema = new moongoose.Schema({
 }
 )
 
+likeSchema.index(
+    { user: 1, music: 1 },
+    { unique: true }
+);
+
 const likeModel = moongoose.model('Like', likeSchema);
 
 module.exports = likeModel;

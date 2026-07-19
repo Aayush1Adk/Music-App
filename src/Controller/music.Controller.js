@@ -41,29 +41,58 @@ const likeMusic = async (req, res) =>{
     const musicId = req.params.musicId;
 
     try{
-        const music = await likeModel.findById(musicId)
+        const music = await musicModel.findById(musicId);
 
-        if(!music){
-            return res.status(204).json({message:"Already liked"})
+        if (!music) {
+            return res.status(404).json({
+                message: "Music not found"
+            });
         }
 
-        const likeMusic = await likeModel.create({
-            user: userId,
-            music: musicId
+        const existingLike = await likeModel.findOne({
+        user: userId,
+        music: musicId
+    });
+
+    if (existingLike) {
+        return res.status(409).json({
+        message: "Already liked"
         });
     }
+
+    const likeMusic = await likeModel.create({
+        user: userId,
+        music: musicId
+        });
+
+    res.status(201).json({
+    message: "Music liked successfully", likeMusic });    
+    }
+
     catch(err){
         console.log(err);
-        res.status(400).json({ message: "Error" });
-    }
+        res.status(400).json({
+            message: "Error liking music"
+                        });
+                    }
 }
 
-const UnlikeMusic = async (req, res)=>{
+const unLikeMusic = async (req, res)=>{
 
-    const musicId =  req.params.musicId;
+try{
+        const musicId =  req.params.musicId;
 
-    const unlikeMusic = await likeModel.findByIdAndDelete(musicId)
+    const deletedLike = await likeModel.findOneAndDelete({
+        user: req.user.id,
+        music: musicId
+    });
     res.status(200).json({ message: "Unliked a song"})
+}
+catch(err){
+    res.status(400).json({
+        message: "error disliking music"
+    })
+}
 
 }
 
@@ -155,7 +184,7 @@ const getMusicById = async(req, res) => {
     const musicId = req.params.musicId
 
     try{
-        const music = await musicModel.findById(musicId).populate("artist","username email").populate("musics")
+        const music = await musicModel.findById(musicId).populate("artist","username email")
         res.status(200).json({
             message:"Music fetched Successfully",
             music : music,
@@ -224,16 +253,22 @@ const updateAlbum = async(req, res) => {
 
     const albumId = req.params.albumId
     const {title} = req.body
-    const music = await musicModel.findById(musicId);
+    const album = await albumModel.findById(albumId);
 
-            if (music.artist.toString() !== req.user.id) {
-            return res.status(403).json({
-                message: "Unauthorized"
-            });
-        }
+    if (!album) {
+        return res.status(404).json({
+            message: "Album not found"
+        });
+    }
+
+    if (album.artist.toString() !== req.user.id) {
+        return res.status(403).json({
+            message: "Unauthorized"
+        });
+    }
 
     try{
-        const album = await albumModel.findByIdAndUpdate(albumId, {title}, {new: true})
+        const Updatealbum = await albumModel.findByIdAndUpdate(albumId, {title}, {new: true})
 
         res.status(200).json({
             message:"Album updated Successfully",
@@ -299,4 +334,5 @@ catch(err){
 }
 
 
-module.exports = {createMusic, createAlbum, getAllMusic, getMusicById, getAllAlbum, getAlbumById, deleteMusic, updateAlbum, searchEverything};
+module.exports = {createMusic, createAlbum, getAllMusic, getMusicById, getAllAlbum, getAlbumById, 
+    deleteMusic, updateAlbum, searchEverything, likeMusic, unLikeMusic};
