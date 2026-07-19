@@ -1,0 +1,61 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+
+import { ToastProvider } from './Context/ToastContext';
+import { AuthProvider } from './Context/AuthContext';
+import { AudioProvider } from './Context/AudioContext';
+
+import Sidebar from './Components/Layout/Sidebar';
+import HeaderNavigation from './Components/Layout/HeaderNavigation';
+import FixedBottomPlayer from './Components/Layout/FixedBottomPlayer';
+import RuntimeConsole from './Components/Layout/RuntimeConsole';
+import AudioCoreEngine from './Components/Music/AudioCoreEngine';
+
+import ProtectedRoute from './Middleware/ProtectedRoute';
+import ArtistRoute from './Middleware/ArtistRoute';
+
+import LoginView from './Pages/Auth/LoginView';
+import RegistrationView from './Pages/Auth/RegistrationView';
+import HomeView from './Pages/Dashboard/HomeView';
+import ResultsView from './Pages/Search/ResultsView';
+import MusicView from './Pages/Music/MusicView';
+import AlbumView from './Pages/Music/AlbumView';
+import ArtistControlPanel from './Pages/Management/ArtistControlPanel';
+
+function AppShell() {
+  return (
+    <div className="app-shell">
+      <Sidebar />
+      <HeaderNavigation />
+      <main className="app-main">
+        <Routes>
+          <Route path="/login" element={<LoginView />} />
+          <Route path="/register" element={<RegistrationView />} />
+
+          <Route path="/" element={<ProtectedRoute><HomeView /></ProtectedRoute>} />
+          <Route path="/search" element={<ProtectedRoute><ResultsView /></ProtectedRoute>} />
+          <Route path="/music/:musicId" element={<ProtectedRoute><MusicView /></ProtectedRoute>} />
+          <Route path="/album/:albumId" element={<ProtectedRoute><AlbumView /></ProtectedRoute>} />
+          <Route path="/manage" element={<ArtistRoute><ArtistControlPanel /></ArtistRoute>} />
+
+          <Route path="*" element={<div className="empty-state">404 :: route not found</div>} />
+        </Routes>
+      </main>
+      <FixedBottomPlayer />
+      <RuntimeConsole />
+      <AudioCoreEngine />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ToastProvider>
+      <AuthProvider>
+        <AudioProvider>
+          <AppShell />
+        </AudioProvider>
+      </AuthProvider>
+    </ToastProvider>
+  );
+}
