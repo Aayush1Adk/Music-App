@@ -4,7 +4,7 @@ import axios from 'axios';
 // (see vite.config.js). withCredentials ensures the session cookie
 // set by the backend on login/register is sent on every request.
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://music-app-ic3l.onrender.com/api',
   withCredentials: true,
 });
 

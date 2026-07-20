@@ -1,9 +1,19 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require("cors");
 const authRouter = require('./Router/auth.routes.js');
 const musicRouter = require('./Router/music.routes.js')
 
 const app = express();
+
+app.use(
+    cors({
+    origin: [
+    "http://localhost:5173",
+    ],
+    credentials: true,
+    })
+);
 
 app.use(express.json());
 app.use(cookieParser());
