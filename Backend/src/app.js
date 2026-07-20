@@ -10,6 +10,7 @@ app.use(
     cors({
     origin: [
     "http://localhost:5173",
+    "https://music-app-one-puce.vercel.app/"
     ],
     credentials: true,
     })
