@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 
 const authArtist = async(req, res, next)=> {
 
+    console.log(req.cookies);
+
     const token = req.cookies.token
 
     if (!token){
@@ -25,6 +27,9 @@ const authArtist = async(req, res, next)=> {
 
 
 const authUser = async(req, res, next)=> {
+
+    console.log(req.cookies);
+
     const token = req.cookies.token
     if(!token){
         return res.status(401).json({message:"Unauthorize"});

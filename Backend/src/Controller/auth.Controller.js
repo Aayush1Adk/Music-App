@@ -31,11 +31,13 @@ const registerUser = async (req, res) => {
     process.env.JWT_SECRET,
     );
 
-    res.cookie("token", token, {
+const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
 });
 
     res.status(201).json({ message: "User registered successfully", user });
@@ -70,11 +72,13 @@ const loginUser = async (req, res)=>{
         role: user.role
     }, process.env.JWT_SECRET)
 
-   res.cookie("token", token, {
+const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
 });
 
     res.status(200).json({message:"login successfully", 
@@ -87,10 +91,12 @@ catch(err){
 }
 
 const logoutUser = async(req, res) => {
-  res.clearCookie("token", {
+const isProduction = process.env.NODE_ENV === "production";
+
+res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production"
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
 });
   res.status(200).json({ message: "Logout successfully" });
 }
