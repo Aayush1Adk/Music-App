@@ -24,22 +24,22 @@ export default function LoginView() {
     <div className="auth-shell">
       <div className="auth-card">
         <div className="auth-card-head">
-          <div className="brand">hackstream</div>
-          <div className="path">$ ~/auth/login</div>
+          <div className="brand">Dhuwaani</div>
+          <div className="path">Sign in to continue</div>
         </div>
         <div className="auth-card-body">
-          {authError && <div className="error-banner">error: {authError}</div>}
+          {authError && <div className="error-banner">{authError}</div>}
           <form onSubmit={onSubmit}>
             <TextInput
-              label="username or email"
+              label="Username or email"
               name="identifier"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               required
-              placeholder="octocat or octocat@hackstream.dev"
+              placeholder="you@example.com"
             />
             <TextInput
-              label="password"
+              label="Password"
               type="password"
               name="password"
               value={password}
@@ -48,11 +48,11 @@ export default function LoginView() {
               placeholder="••••••••"
             />
             <CustomButton type="submit" variant="primary" loading={loading} className="span-2" style={{ width: '100%' }}>
-              $ authenticate
+              Sign in
             </CustomButton>
           </form>
           <div className="auth-footer-link">
-            no account yet? <Link to="/register">register a new session</Link>
+            New here? <Link to="/register">Create an account</Link>
           </div>
         </div>
       </div>

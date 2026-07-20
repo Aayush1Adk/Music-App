@@ -8,7 +8,6 @@ import { AudioProvider } from './Context/AudioContext';
 import Sidebar from './Components/Layout/Sidebar';
 import HeaderNavigation from './Components/Layout/HeaderNavigation';
 import FixedBottomPlayer from './Components/Layout/FixedBottomPlayer';
-import RuntimeConsole from './Components/Layout/RuntimeConsole';
 import AudioCoreEngine from './Components/Music/AudioCoreEngine';
 
 import ProtectedRoute from './Middleware/ProtectedRoute';
@@ -38,11 +37,10 @@ function AppShell() {
           <Route path="/album/:albumId" element={<ProtectedRoute><AlbumView /></ProtectedRoute>} />
           <Route path="/manage" element={<ArtistRoute><ArtistControlPanel /></ArtistRoute>} />
 
-          <Route path="*" element={<div className="empty-state">404 :: route not found</div>} />
+          <Route path="*" element={<div className="empty-state">This page doesn't exist.</div>} />
         </Routes>
       </main>
       <FixedBottomPlayer />
-      <RuntimeConsole />
       <AudioCoreEngine />
     </div>
   );

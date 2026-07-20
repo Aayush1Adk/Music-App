@@ -25,9 +25,9 @@ export function AuthProvider({ children }) {
     setUnauthorizedHandler((status) => {
       if (status === 401) {
         setUser(null);
-        toast.error('session_expired: please sign in again (401)');
+        toast.error('Your session expired. Please sign in again.');
       } else if (status === 403) {
-        toast.error('forbidden: insufficient role permissions (403)');
+        toast.error("You don't have permission to do that.");
       }
     });
     return () => setUnauthorizedHandler(null);
@@ -38,10 +38,10 @@ export function AuthProvider({ children }) {
     try {
       const data = await registerAccount({ username, email, password, role });
       setUser(data.user || data);
-      toast.success(`account created as ${role}`);
+      toast.success(role === 'artist' ? 'Welcome — your artist account is ready.' : 'Welcome to Dhuwaani.');
       return true;
     } catch (err) {
-      const msg = err?.response?.data?.message || 'registration failed';
+      const msg = err?.response?.data?.message || 'Could not create your account. Please try again.';
       setAuthError(msg);
       toast.error(msg);
       return false;
@@ -53,10 +53,10 @@ export function AuthProvider({ children }) {
     try {
       const data = await loginSession({ identifier, password });
       setUser(data.user || data);
-      toast.success('login successful');
+      toast.success('Signed in.');
       return true;
     } catch (err) {
-      const msg = err?.response?.data?.message || 'invalid credentials';
+      const msg = err?.response?.data?.message || 'Incorrect username/email or password.';
       setAuthError(msg);
       toast.error(msg);
       return false;
@@ -70,7 +70,7 @@ export function AuthProvider({ children }) {
       // ignore network errors on logout; clear local state regardless
     }
     setUser(null);
-    toast.info('session terminated');
+    toast.info('Signed out.');
   }, [toast]);
 
   const value = useMemo(() => ({

@@ -9,7 +9,7 @@ export default function ProtectedRoute({ children }) {
   const location = useLocation();
 
   if (initializing) {
-    return <div className="loading-line">booting session context</div>;
+    return <div className="loading-line">Loading…</div>;
   }
 
   if (!isAuthenticated) {

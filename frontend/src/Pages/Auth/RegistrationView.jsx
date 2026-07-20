@@ -25,55 +25,55 @@ export default function RegistrationView() {
     <div className="auth-shell">
       <div className="auth-card">
         <div className="auth-card-head">
-          <div className="brand">hackstream</div>
-          <div className="path">$ ~/auth/register</div>
+          <div className="brand">Dhuwaani</div>
+          <div className="path">Create your account</div>
         </div>
         <div className="auth-card-body">
-          {authError && <div className="error-banner">error: {authError}</div>}
+          {authError && <div className="error-banner">{authError}</div>}
 
           <div className="role-switch">
             <button type="button" className={role === 'user' ? 'active' : ''} onClick={() => setRole('user')}>
-              role: user
+              Listener
             </button>
             <button type="button" className={role === 'artist' ? 'active' : ''} onClick={() => setRole('artist')}>
-              role: artist
+              Artist
             </button>
           </div>
 
           <form onSubmit={onSubmit}>
             <TextInput
-              label="username"
+              label="Username"
               name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="octocat"
+              placeholder="Pick a username"
             />
             <TextInput
-              label="email"
+              label="Email"
               type="email"
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="octocat@hackstream.dev"
+              placeholder="you@example.com"
             />
             <TextInput
-              label="password"
+              label="Password"
               type="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              hint="min 8 characters recommended"
+              hint="8 characters minimum"
             />
             <CustomButton type="submit" variant="primary" loading={loading} style={{ width: '100%' }}>
-              $ create-account --role={role}
+              Create {role === 'artist' ? 'artist' : ''} account
             </CustomButton>
           </form>
           <div className="auth-footer-link">
-            already registered? <Link to="/login">sign in</Link>
+            Already have an account? <Link to="/login">Sign in</Link>
           </div>
         </div>
       </div>

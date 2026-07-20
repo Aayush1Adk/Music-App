@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Breadcrumb from '../../Components/Common/Breadcrumb';
+import PageHeading from '../../Components/Common/PageHeading';
 import TrackListItem from '../../Components/Music/TrackListItem';
 import CustomButton from '../../Components/Common/CustomButton';
 import { fetchAlbumById } from '../../Api/music.api';
@@ -21,14 +21,14 @@ export default function AlbumView() {
         const data = await fetchAlbumById(albumId);
         setAlbum(data.album || data);
       } catch (err) {
-        setError(err?.response?.data?.message || 'album not found');
+        setError(err?.response?.data?.message || 'This album could not be found.');
       } finally {
         setLoading(false);
       }
     })();
   }, [albumId]);
 
-  if (loading) return <div className="loading-line">GET /getalbum/{albumId}</div>;
+  if (loading) return <div className="loading-line">Loading album</div>;
   if (error) return <div className="error-banner">{error}</div>;
   if (!album) return null;
 
@@ -36,27 +36,26 @@ export default function AlbumView() {
 
   return (
     <div>
-      <Breadcrumb segments={['albums', 'getalbum', albumId]} />
+      <PageHeading eyebrow="Album" title={album.title} />
       <div className="card" style={{ display: 'flex', gap: 20, padding: 20, marginBottom: 20 }}>
         <div className="album-card-art" style={{ width: 160, height: 160, flexShrink: 0 }}>
           {album.cover ? <img src={album.cover} alt={album.title} /> : <span>▦</span>}
         </div>
         <div style={{ flex: 1 }}>
-          <h2 style={{ color: 'var(--text-header)', margin: '0 0 6px 0' }}>{album.title}</h2>
-          <div style={{ color: 'var(--text-secondary)', marginBottom: 10 }}>
-            {album.artist?.username || album.artistName || 'unknown_artist'}
+          <div style={{ color: 'var(--text-secondary)', marginBottom: 10, fontSize: 14 }}>
+            {album.artist?.username || album.artistName || 'Unknown artist'}
           </div>
           <div style={{ color: 'var(--text-muted)', fontSize: 11, marginBottom: 14 }}>
-            {tracks.length} tracks
+            {tracks.length} {tracks.length === 1 ? 'track' : 'tracks'}
           </div>
           <CustomButton variant="primary" disabled={tracks.length === 0} onClick={() => playQueue(tracks, 0)}>
-            ▶ play album
+            ▶ Play album
           </CustomButton>
         </div>
       </div>
 
       {tracks.length === 0 ? (
-        <div className="empty-state">this album has no populated tracks.</div>
+        <div className="empty-state">This album doesn't have any tracks yet.</div>
       ) : (
         <div className="card">
           {tracks.map((t, i) => (

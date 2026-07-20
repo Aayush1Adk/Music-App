@@ -405,7 +405,7 @@ const playcount = async(req, res) =>{
             });
         }
         const now = new Date();
-        const lastPlayed = existingPlay.updateAt;
+        const lastPlayed = existingPlay.updatedAt;
         const diff = now.getTime() - lastPlayed.getTime();
 
         const THIRTY_MINUTES = 30 * 60 * 1000;

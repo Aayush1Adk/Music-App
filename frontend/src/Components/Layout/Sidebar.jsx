@@ -8,17 +8,17 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <div className="logo">hackstream</div>
-        <div className="tagline">// music streaming engine</div>
+        <div className="logo">Dhuwaani</div>
+        <div className="tagline">stream what you build</div>
       </div>
 
       <div className="sidebar-section">navigate</div>
       <nav className="sidebar-nav">
         <NavLink to="/" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} end>
-          <span className="prompt-char">$</span> cd ~/home
+          Home
         </NavLink>
         <NavLink to="/search" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-          <span className="prompt-char">$</span> grep --search
+          Search
         </NavLink>
       </nav>
 
@@ -27,7 +27,7 @@ export default function Sidebar() {
           <div className="sidebar-section">artist</div>
           <nav className="sidebar-nav">
             <NavLink to="/manage" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-              <span className="prompt-char">#</span> sudo control-panel
+              Artist studio
             </NavLink>
           </nav>
         </>
@@ -35,13 +35,13 @@ export default function Sidebar() {
 
       {!isAuthenticated && (
         <>
-          <div className="sidebar-section">session</div>
+          <div className="sidebar-section">account</div>
           <nav className="sidebar-nav">
             <NavLink to="/login" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-              <span className="prompt-char">$</span> login
+              Sign in
             </NavLink>
             <NavLink to="/register" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-              <span className="prompt-char">$</span> register
+              Create account
             </NavLink>
           </nav>
         </>
@@ -49,9 +49,9 @@ export default function Sidebar() {
 
       <div className="sidebar-footer">
         {isAuthenticated ? (
-          <>user@{user?.username || 'unknown'}<br />role: {user?.role || 'user'}</>
+          <>{user?.username || 'account'} · {user?.role === 'artist' ? 'artist' : 'listener'}</>
         ) : (
-          <>guest session · unauthenticated</>
+          <>Signed out</>
         )}
       </div>
     </aside>

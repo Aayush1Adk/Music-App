@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import Breadcrumb from '../../Components/Common/Breadcrumb';
+import PageHeading from '../../Components/Common/PageHeading';
 import BorderedGrid from '../../Components/Common/BorderedGrid';
 import AlbumCoverCard from '../../Components/Music/AlbumCoverCard';
 import TrackListItem from '../../Components/Music/TrackListItem';
@@ -26,7 +26,7 @@ export default function ResultsView() {
           artists: data.artists || data.users || [],
         });
       } catch (err) {
-        setError(err?.response?.data?.message || 'search request failed');
+        setError(err?.response?.data?.message || 'Search is unavailable right now.');
       } finally {
         setLoading(false);
       }
@@ -35,22 +35,22 @@ export default function ResultsView() {
 
   return (
     <div>
-      <Breadcrumb segments={['search', `q=${q || '""'}`]} />
+      <PageHeading eyebrow="Search" title={q ? `Results for "${q}"` : 'Search'} />
 
       {!q ? (
         <div className="empty-state">
-          <div className="glyph">/</div>
-          type a query in the top search bar to grep the catalog.
+          <div className="glyph">⌕</div>
+          Use the search bar above to find tracks, albums, and artists.
         </div>
       ) : loading ? (
-        <div className="loading-line">running query "{q}"</div>
+        <div className="loading-line">Searching</div>
       ) : error ? (
         <div className="error-banner">{error}</div>
       ) : (
         <>
-          <div className="section-heading"><h2>musics ({results.musics.length})</h2></div>
+          <div className="section-heading"><h2>Tracks ({results.musics.length})</h2></div>
           {results.musics.length === 0 ? (
-            <div className="empty-state">no matching musics.</div>
+            <div className="empty-state">No matching tracks.</div>
           ) : (
             <div className="card">
               {results.musics.map((t, i) => (
@@ -59,18 +59,18 @@ export default function ResultsView() {
             </div>
           )}
 
-          <div className="section-heading"><h2>albums ({results.albums.length})</h2></div>
+          <div className="section-heading"><h2>Albums ({results.albums.length})</h2></div>
           {results.albums.length === 0 ? (
-            <div className="empty-state">no matching albums.</div>
+            <div className="empty-state">No matching albums.</div>
           ) : (
             <BorderedGrid cols={5}>
               {results.albums.map((a) => <AlbumCoverCard key={a._id || a.id} album={a} />)}
             </BorderedGrid>
           )}
 
-          <div className="section-heading"><h2>artists ({results.artists.length})</h2></div>
+          <div className="section-heading"><h2>Artists ({results.artists.length})</h2></div>
           {results.artists.length === 0 ? (
-            <div className="empty-state">no matching artists.</div>
+            <div className="empty-state">No matching artists.</div>
           ) : (
             <div className="card">
               {results.artists.map((u) => (
@@ -78,7 +78,7 @@ export default function ResultsView() {
                   <div className="thumb" />
                   <div className="meta">
                     <div className="title">{u.username}</div>
-                    <div className="artist">role: artist</div>
+                    <div className="artist">Artist</div>
                   </div>
                   <span className="tag">{u.tracksCount ?? 0} tracks</span>
                 </div>

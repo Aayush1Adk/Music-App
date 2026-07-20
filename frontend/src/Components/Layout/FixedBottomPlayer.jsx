@@ -21,8 +21,8 @@ export default function FixedBottomPlayer() {
         <div className="player-track-meta">
           <div className="thumb" />
           <div className="info">
-            <div className="title" style={{ color: 'var(--text-muted)' }}>no track loaded</div>
-            <div className="artist">idle // queue: []</div>
+            <div className="title" style={{ color: 'var(--text-muted)' }}>Nothing playing</div>
+            <div className="artist">Pick a track to get started</div>
           </div>
         </div>
         <div className="player-center">
@@ -49,35 +49,27 @@ export default function FixedBottomPlayer() {
         </div>
         <div className="info">
           <div className="title">{currentTrack.title}</div>
-          <div className="artist">{currentTrack.artist?.username || currentTrack.artistName || 'unknown_artist'}</div>
+          <div className="artist">{currentTrack.artist?.username || currentTrack.artistName || 'Unknown artist'}</div>
         </div>
         <div className="like-controls">
           <button
             className={`btn btn-icon ${likeState.liked ? 'active' : ''}`}
             onClick={() => toggleLike(currentTrack)}
-            title="like"
+            title={likeState.liked ? 'Unlike' : 'Like'}
           >
             ▲ {likeState.likesCount}
-          </button>
-          <button
-            className="btn btn-icon"
-            onClick={() => toggleLike({ ...currentTrack, likesCount: likeState.likesCount })}
-            title="dislike"
-            style={{ display: likeState.liked ? 'inline-flex' : 'none' }}
-          >
-            ▼
           </button>
         </div>
       </div>
 
       <div className="player-center">
         <div className="player-controls">
-          <button className="btn btn-icon" onClick={playPrev} title="previous">⏮</button>
-          <button className="btn btn-icon btn-primary" onClick={togglePlay} title="play/pause">
+          <button className="btn btn-icon" onClick={playPrev} title="Previous">⏮</button>
+          <button className="btn btn-icon btn-primary" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
             {isPlaying ? '⏸' : '▶'}
           </button>
-          <button className="btn btn-icon" onClick={playNext} title="next">⏭</button>
-          <button className={`btn btn-icon ${loop ? 'active' : ''}`} onClick={toggleLoop} title="loop">
+          <button className="btn btn-icon" onClick={playNext} title="Next">⏭</button>
+          <button className={`btn btn-icon ${loop ? 'active' : ''}`} onClick={toggleLoop} title="Loop">
             ↻
           </button>
         </div>
@@ -96,7 +88,7 @@ export default function FixedBottomPlayer() {
       </div>
 
       <div className="player-right">
-        <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>vol</span>
+        <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>Vol</span>
         <input
           type="range"
           min={0}

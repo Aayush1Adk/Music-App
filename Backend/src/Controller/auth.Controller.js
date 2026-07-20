@@ -31,7 +31,12 @@ const registerUser = async (req, res) => {
     process.env.JWT_SECRET,
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+});
 
     res.status(201).json({ message: "User registered successfully", user });
     console.log("User registered successfully", user);
@@ -65,7 +70,12 @@ const loginUser = async (req, res)=>{
         role: user.role
     }, process.env.JWT_SECRET)
 
-    res.cookie("token", token)
+   res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+});
 
     res.status(200).json({message:"login successfully", 
         user})
@@ -77,8 +87,33 @@ catch(err){
 }
 
 const logoutUser = async(req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production"
+});
   res.status(200).json({ message: "Logout successfully" });
 }
 
-module.exports = { registerUser, loginUser, logoutUser };
+const getCurrentUser = async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.user.id).select("-password");
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            user
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+module.exports = { registerUser, loginUser, logoutUser,  getCurrentUser };

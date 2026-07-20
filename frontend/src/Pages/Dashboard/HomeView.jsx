@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Breadcrumb from '../../Components/Common/Breadcrumb';
+import PageHeading from '../../Components/Common/PageHeading';
 import BorderedGrid from '../../Components/Common/BorderedGrid';
 import AlbumCoverCard from '../../Components/Music/AlbumCoverCard';
 import TrackListItem from '../../Components/Music/TrackListItem';
@@ -26,24 +26,23 @@ export default function HomeView() {
         const data = await fetchRecentAlbums();
         setAlbums(data.items || data.albums || data.data || []);
       } catch (err) {
-        setAlbumsError('failed to reach /api/music/getalbum');
+        setAlbumsError('Could not load new albums right now.');
       }
     })();
   }, []);
 
   return (
     <div>
-      <Breadcrumb segments={['home']} />
+      <PageHeading eyebrow="Overview" title="Home" />
 
       <div className="section-heading">
-        <h2>recent albums</h2>
-        <span className="see-all">GET /api/music/getalbum</span>
+        <h2>New albums</h2>
       </div>
       {albumsError && <div className="error-banner">{albumsError}</div>}
       {albums.length === 0 && !albumsError ? (
         <div className="empty-state">
           <div className="glyph">▦</div>
-          no album rollouts yet — artists can publish one from the control panel.
+          No albums yet — artists can publish one from the artist studio.
         </div>
       ) : (
         <BorderedGrid cols={6}>
@@ -52,12 +51,11 @@ export default function HomeView() {
       )}
 
       <div className="section-heading">
-        <h2>catalog</h2>
-        <span className="see-all">GET /api/music</span>
+        <h2>Catalog</h2>
       </div>
 
       <div className="toolbar">
-        <span className="toolbar-label">sortBy:</span>
+        <span className="toolbar-label">Sort by</span>
         <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1); }}>
           {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -65,7 +63,7 @@ export default function HomeView() {
 
       {error && <div className="error-banner">{error}</div>}
       {loading ? (
-        <div className="loading-line">fetching page {page} of catalog</div>
+        <div className="loading-line">Loading tracks</div>
       ) : tracks.length === 0 ? (
         <div className="empty-state">
           <div className="glyph">♪</div>

@@ -21,16 +21,19 @@ export default function AssetMutationPanel() {
     try {
       const albumData = await fetchRecentAlbums();
       const albumItems = albumData.items || albumData.albums || albumData.data || [];
-      setAlbums(albumItems.filter((a) => !a.artist?._id || a.artist._id === user?._id));
+      // Only show albums we can positively confirm belong to the signed-in
+      // artist. Ownership can't be verified when the artist id is missing,
+      // so we exclude rather than default to showing someone else's work.
+      setAlbums(albumItems.filter((a) => a.artist?._id && user?._id && a.artist._id === user._id));
     } catch (err) {
-      toast.error('failed to load albums');
+      toast.error('Could not load your albums right now.');
     }
     try {
       const musicData = await fetchCatalog({ page: 1, limit: 100, sortBy: 'latest' });
       const musicItems = musicData.items || musicData.musics || musicData.data || [];
-      setTracks(musicItems.filter((t) => !t.artist?._id || t.artist._id === user?._id));
+      setTracks(musicItems.filter((t) => t.artist?._id && user?._id && t.artist._id === user._id));
     } catch (err) {
-      toast.error('failed to load tracks');
+      toast.error('Could not load your tracks right now.');
     }
   };
 
@@ -47,10 +50,10 @@ export default function AssetMutationPanel() {
     try {
       await updateAlbum(editingAlbum._id || editingAlbum.id, { title: editTitle });
       setAlbums((prev) => prev.map((a) => ((a._id || a.id) === (editingAlbum._id || editingAlbum.id) ? { ...a, title: editTitle } : a)));
-      toast.success('album title updated');
+      toast.success('Album renamed.');
       setEditingAlbum(null);
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'update failed');
+      toast.error(err?.response?.data?.message || 'Could not save the new title.');
     } finally {
       setSavingTitle(false);
     }
@@ -62,10 +65,10 @@ export default function AssetMutationPanel() {
     try {
       await deleteMusic(deletingTrack._id || deletingTrack.id);
       setTracks((prev) => prev.filter((t) => (t._id || t.id) !== (deletingTrack._id || deletingTrack.id)));
-      toast.success(`track "${deletingTrack.title}" deleted`);
+      toast.success(`"${deletingTrack.title}" was deleted.`);
       setDeletingTrack(null);
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'delete failed');
+      toast.error(err?.response?.data?.message || 'Could not delete this track.');
     } finally {
       setDeleting(false);
     }
@@ -73,9 +76,9 @@ export default function AssetMutationPanel() {
 
   return (
     <div>
-      <div className="section-heading"><h2>your albums</h2></div>
+      <div className="section-heading"><h2>Your albums</h2></div>
       {albums.length === 0 ? (
-        <div className="empty-state">no albums to manage yet.</div>
+        <div className="empty-state">You haven't created any albums yet.</div>
       ) : (
         <div className="card" style={{ marginBottom: 20 }}>
           {albums.map((a) => (
@@ -85,7 +88,7 @@ export default function AssetMutationPanel() {
                 <div className="title">{a.title}</div>
               </div>
               <div className="actions">
-                <CustomButton onClick={() => openEdit(a)}>PUT /updatealbum</CustomButton>
+                <CustomButton onClick={() => openEdit(a)}>Rename</CustomButton>
               </div>
             </div>
           ))}
@@ -93,16 +96,16 @@ export default function AssetMutationPanel() {
       )}
 
       <div className="danger-zone">
-        <h3>delete tracks</h3>
+        <h3>Delete a track</h3>
         {tracks.length === 0 ? (
-          <div className="empty-state">no owned tracks found.</div>
+          <div className="empty-state">You don't have any tracks to delete.</div>
         ) : (
           tracks.map((t) => (
             <div className="track-row" key={t._id || t.id} style={{ gridTemplateColumns: '40px 1fr auto' }}>
               <div className="thumb">{t.coverUri ? <img src={t.coverUri} alt={t.title} /> : null}</div>
               <div className="meta"><div className="title">{t.title}</div></div>
               <div className="actions">
-                <CustomButton variant="danger" onClick={() => setDeletingTrack(t)}>DELETE /deletemusic</CustomButton>
+                <CustomButton variant="danger" onClick={() => setDeletingTrack(t)}>Delete</CustomButton>
               </div>
             </div>
           ))
@@ -111,14 +114,14 @@ export default function AssetMutationPanel() {
 
       {editingAlbum && (
         <ConfirmModal
-          title={`update album :${editingAlbum._id || editingAlbum.id}`}
-          confirmLabel="save"
+          title={`Rename "${editingAlbum.title}"`}
+          confirmLabel="Save"
           onCancel={() => setEditingAlbum(null)}
           onConfirm={submitEdit}
           loading={savingTitle}
           message={
             <TextInput
-              label="new title"
+              label="New title"
               name="editTitle"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
@@ -130,12 +133,12 @@ export default function AssetMutationPanel() {
 
       {deletingTrack && (
         <ConfirmModal
-          title={`delete track :${deletingTrack._id || deletingTrack.id}`}
-          confirmLabel="permanently delete"
+          title={`Delete "${deletingTrack.title}"?`}
+          confirmLabel="Delete permanently"
           onCancel={() => setDeletingTrack(null)}
           onConfirm={confirmDelete}
           loading={deleting}
-          message={`this will permanently remove "${deletingTrack.title}". this action cannot be undone.`}
+          message={`This will permanently remove "${deletingTrack.title}". This action cannot be undone.`}
         />
       )}
     </div>

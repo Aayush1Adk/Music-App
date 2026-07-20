@@ -17,21 +17,21 @@ export default function TrackListItem({ track, index, queue, canDelete = false, 
         <div className="title">
           <Link to={`/music/${track._id || track.id}`}>{track.title}</Link>
         </div>
-        <div className="artist">{track.artist?.username || track.artistName || 'unknown_artist'}</div>
+        <div className="artist">{track.artist?.username || track.artistName || 'Unknown artist'}</div>
       </div>
       <div className="stat">{like.likesCount} likes</div>
       <div className="stat">{track.playsCount ?? 0} plays</div>
       <div className="actions">
-        <button className="btn btn-icon" onClick={() => playQueue(queue || [track], index ?? 0)} title="play">▶</button>
+        <button className="btn btn-icon" onClick={() => playQueue(queue || [track], index ?? 0)} title="Play">▶</button>
         <button
           className={`btn btn-icon ${like.liked ? 'active' : ''}`}
           onClick={() => toggleLike(track)}
-          title="like"
+          title={like.liked ? 'Unlike' : 'Like'}
         >
           ▲
         </button>
         {canDelete && (
-          <button className="btn btn-icon btn-danger" onClick={() => onDelete?.(track)} title="delete">✕</button>
+          <button className="btn btn-icon btn-danger" onClick={() => onDelete?.(track)} title="Delete">✕</button>
         )}
       </div>
     </div>

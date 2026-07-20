@@ -1,5 +1,5 @@
 /* ==========================================================================
-   hackstream :: global stylesheet
+   dhuwaani :: global stylesheet
    Theme: GitHub Dark Mode x Linux Terminal x YouTube Music layout
    ========================================================================== */
 
@@ -29,13 +29,12 @@
 
   /* --- Type --- */
   --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, 'Courier New', monospace;
+  --font-display: 'Space Grotesk', var(--font-mono);
 
   /* --- Layout --- */
   --sidebar-w: 240px;
   --player-h: 88px;
   --header-h: 56px;
-  --console-h: 28px;
-  --console-h-open: 180px;
   --radius: 3px;
 }
 
@@ -103,28 +102,27 @@ button, input, select, textarea {
 .app-main {
   overflow-y: auto;
   background: var(--bg-deep);
-  padding: 20px 24px calc(var(--player-h) + var(--console-h) + 24px) 24px;
+  padding: 24px 28px calc(var(--player-h) + 24px) 28px;
 }
 
-/* --- Breadcrumb / path bar --- */
-.path-breadcrumb {
-  font-size: 12px;
-  color: var(--text-terminal-green);
-  border: 1px solid var(--border-default);
-  background: var(--bg-inset);
-  border-radius: var(--radius);
-  padding: 6px 10px;
-  margin-bottom: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+/* --- Page heading --- */
+.page-heading {
+  margin-bottom: 22px;
 }
-.path-breadcrumb::before {
-  content: '$';
+.page-heading-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--text-secondary);
+  margin-bottom: 4px;
 }
-.path-breadcrumb .seg-id {
-  color: var(--text-header);
+.page-heading-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
 /* ==========================================================================
@@ -146,13 +144,11 @@ button, input, select, textarea {
   margin-bottom: 8px;
 }
 .sidebar-brand .logo {
+  font-family: var(--font-display);
   color: var(--text-header);
   font-weight: 700;
-  font-size: 15px;
-}
-.sidebar-brand .logo::before {
-  content: '~/';
-  color: var(--text-secondary);
+  font-size: 17px;
+  letter-spacing: -0.01em;
 }
 .sidebar-brand .tagline {
   color: var(--text-muted);
@@ -411,33 +407,6 @@ button, input, select, textarea {
   border-radius: var(--radius);
 }
 
-.terminal-card {
-  background: var(--bg-inset);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius);
-  font-family: var(--font-mono);
-}
-.terminal-card-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border-default);
-  font-size: 11px;
-  color: var(--text-muted);
-}
-.terminal-card-title .dots span {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 4px;
-  background: var(--border-strong);
-}
-.terminal-card-body {
-  padding: 12px;
-}
-
 .bordered-grid {
   display: grid;
   gap: 14px;
@@ -455,18 +424,16 @@ button, input, select, textarea {
   margin: 24px 0 12px 0;
 }
 .section-heading h2 {
-  font-size: 14px;
-  color: var(--text-header);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
   margin: 0;
-  text-transform: lowercase;
-}
-.section-heading h2::before {
-  content: '## ';
-  color: var(--text-muted);
 }
 .section-heading .see-all {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
+  cursor: pointer;
 }
 
 .toolbar {
@@ -642,7 +609,7 @@ button, input, select, textarea {
   position: fixed;
   left: var(--sidebar-w);
   right: 0;
-  bottom: var(--console-h);
+  bottom: 0;
   height: var(--player-h);
   background: var(--bg-surface);
   border-top: 1px solid var(--border-default);
@@ -733,56 +700,6 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
-   Runtime console (bottom terminal log)
-   ========================================================================== */
-
-.runtime-console {
-  position: fixed;
-  left: var(--sidebar-w);
-  right: 0;
-  bottom: 0;
-  height: var(--console-h);
-  background: var(--bg-inset);
-  border-top: 1px solid var(--border-default);
-  color: var(--text-terminal-green);
-  font-size: 11px;
-  z-index: 35;
-  overflow: hidden;
-  transition: height 0.15s ease;
-}
-.runtime-console.open {
-  height: var(--console-h-open);
-}
-.runtime-console-bar {
-  height: var(--console-h);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  cursor: pointer;
-  color: var(--text-muted);
-}
-.runtime-console-bar .status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--status-success);
-  box-shadow: 0 0 4px var(--status-success);
-}
-.runtime-console-log {
-  height: calc(var(--console-h-open) - var(--console-h));
-  overflow-y: auto;
-  padding: 4px 12px 10px 12px;
-}
-.runtime-console-log .line {
-  white-space: pre-wrap;
-  line-height: 1.5;
-}
-.runtime-console-log .line .lvl-info { color: var(--text-secondary); }
-.runtime-console-log .line .lvl-warn { color: var(--status-warning); }
-.runtime-console-log .line .lvl-err { color: var(--status-danger); }
-
-/* ==========================================================================
    Auth pages
    ========================================================================== */
 
@@ -809,13 +726,14 @@ button, input, select, textarea {
   border-bottom: 1px solid var(--border-default);
 }
 .auth-card-head .brand {
+  font-family: var(--font-display);
   color: var(--text-header);
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 700;
 }
 .auth-card-head .path {
-  color: var(--text-terminal-green);
-  font-size: 11px;
+  color: var(--text-muted);
+  font-size: 12px;
   margin-top: 4px;
 }
 .auth-card-body {

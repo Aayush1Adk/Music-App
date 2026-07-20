@@ -20,11 +20,10 @@ export default function CreateAlbumForm() {
       try {
         const data = await fetchCatalog({ page: 1, limit: 100, sortBy: 'latest' });
         const items = data.items || data.musics || data.data || [];
-        // Prefer showing only this artist's own uploads when the field is present.
-        const own = items.filter((t) => !t.artist?._id || t.artist._id === user?._id);
-        setAvailable(own.length ? own : items);
+        // Only offer tracks we can positively confirm belong to this artist.
+        setAvailable(items.filter((t) => t.artist?._id && user?._id && t.artist._id === user._id));
       } catch (err) {
-        toast.error('failed to load your tracks for album selection');
+        toast.error('Could not load your tracks right now.');
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,7 +36,7 @@ export default function CreateAlbumForm() {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (selected.length === 0) {
-      toast.error('select at least one track for musics[]');
+      toast.error('Select at least one track for this album.');
       return;
     }
     setSubmitting(true);
@@ -47,13 +46,13 @@ export default function CreateAlbumForm() {
         { cover, title, musics: selected },
         (evt) => setProgress(Math.round((evt.loaded / evt.total) * 100))
       );
-      toast.success(`album "${title}" created`);
+      toast.success(`"${title}" is live.`);
       setTitle('');
       setCover(null);
       setSelected([]);
       setProgress(0);
     } catch (err) {
-      toast.error(err?.response?.data?.message || 'album creation failed');
+      toast.error(err?.response?.data?.message || 'Could not create the album. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -63,27 +62,27 @@ export default function CreateAlbumForm() {
     <form onSubmit={onSubmit} className="form-grid">
       <div className="span-2">
         <TextInput
-          label="title"
+          label="Album title"
           name="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          placeholder="album title"
+          placeholder="e.g. Late Signal"
         />
       </div>
 
       <div className="field">
-        <label>cover</label>
+        <label>Cover art</label>
         <input type="file" accept="image/*" onChange={(e) => setCover(e.target.files?.[0] || null)} disabled={submitting} />
-        <span className="field-hint">image binary, sent as multipart field "cover"</span>
+        <span className="field-hint">Square image, optional</span>
       </div>
 
       <div className="span-2 field">
-        <label>musics <span className="req">*</span></label>
+        <label>Tracks <span className="req">*</span></label>
         <div className="checkbox-list">
           {available.length === 0 ? (
             <div style={{ padding: 10, color: 'var(--text-muted)', fontSize: 12 }}>
-              no tracks available — upload a track first.
+              No tracks available yet — upload one first.
             </div>
           ) : (
             available.map((t) => (
@@ -98,16 +97,14 @@ export default function CreateAlbumForm() {
             ))
           )}
         </div>
-        <span className="field-hint">
-          selected ids stringified via JSON.stringify(musics) — {selected.length} selected
-        </span>
+        <span className="field-hint">{selected.length} selected</span>
       </div>
 
-      {submitting && <div className="span-2 loading-line">uploading… {progress}%</div>}
+      {submitting && <div className="span-2 loading-line">Uploading… {progress}%</div>}
 
       <div className="span-2">
         <CustomButton type="submit" variant="primary" loading={submitting} disabled={submitting}>
-          $ POST /api/music/album
+          Create album
         </CustomButton>
       </div>
     </form>

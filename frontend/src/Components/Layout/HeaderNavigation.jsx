@@ -25,11 +25,11 @@ export default function HeaderNavigation() {
   return (
     <header className="header-nav">
       <form className="search-form" onSubmit={onSubmit}>
-        <span>/</span>
+        <span>⌕</span>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="query musics, albums, artists..."
+          placeholder="Search tracks, albums, and artists"
         />
       </form>
       <div className="header-spacer" />
@@ -39,7 +39,7 @@ export default function HeaderNavigation() {
             <button className="profile-btn" onClick={() => setMenuOpen((o) => !o)}>
               <span className="avatar-chip">{(user?.username || '?')[0]?.toUpperCase()}</span>
               {user?.username}
-              <span className="role-tag">{user?.role}</span>
+              <span className="role-tag">{user?.role === 'artist' ? 'Artist' : 'Listener'}</span>
             </button>
             {menuOpen && (
               <div className="profile-menu">
@@ -47,15 +47,15 @@ export default function HeaderNavigation() {
                   {user?.email}
                 </div>
                 {user?.role === 'artist' && (
-                  <button onClick={() => { setMenuOpen(false); navigate('/manage'); }}>control-panel</button>
+                  <button onClick={() => { setMenuOpen(false); navigate('/manage'); }}>Artist studio</button>
                 )}
-                <button onClick={() => { setMenuOpen(false); logout(); }}>logout</button>
+                <button onClick={() => { setMenuOpen(false); logout(); }}>Sign out</button>
               </div>
             )}
           </>
         ) : (
           <button className="profile-btn" onClick={() => navigate('/login')}>
-            <span className="avatar-chip">?</span> sign in
+            <span className="avatar-chip">?</span> Sign in
           </button>
         )}
       </div>

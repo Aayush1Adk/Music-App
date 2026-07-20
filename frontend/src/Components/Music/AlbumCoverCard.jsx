@@ -10,7 +10,7 @@ export default function AlbumCoverCard({ album }) {
       </div>
       <div className="album-card-body">
         <div className="album-card-title">{album.title}</div>
-        <div className="album-card-sub">{album.artist?.username || album.artistName || 'unknown_artist'}</div>
+        <div className="album-card-sub">{album.artist?.username || album.artistName || 'Unknown artist'}</div>
       </div>
     </div>
   );

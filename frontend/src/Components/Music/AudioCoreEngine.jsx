@@ -11,7 +11,7 @@ export default function AudioCoreEngine() {
     if (!('mediaSession' in navigator) || !currentTrack) return;
     navigator.mediaSession.metadata = new window.MediaMetadata({
       title: currentTrack.title,
-      artist: currentTrack.artist?.username || currentTrack.artistName || 'unknown_artist',
+      artist: currentTrack.artist?.username || currentTrack.artistName || 'Unknown artist',
       artwork: currentTrack.coverUri ? [{ src: currentTrack.coverUri, sizes: '512x512' }] : [],
     });
     navigator.mediaSession.setActionHandler('play', togglePlay);

@@ -9,7 +9,7 @@ export default function ArtistRoute({ children }) {
   const { isAuthenticated, isArtist, initializing } = useAuth();
 
   if (initializing) {
-    return <div className="loading-line">verifying artist scope</div>;
+    return <div className="loading-line">Loading…</div>;
   }
 
   if (!isAuthenticated) {
