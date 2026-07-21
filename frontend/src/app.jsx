@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastProvider } from './Context/ToastContext';
 import { AuthProvider } from './Context/AuthContext';
 import { AudioProvider } from './Context/AudioContext';
+import { UIProvider, useUI } from './Context/UIContext';
 
 import Sidebar from './Components/Layout/Sidebar';
 import HeaderNavigation from './Components/Layout/HeaderNavigation';
@@ -22,9 +23,14 @@ import AlbumView from './Pages/Music/AlbumView';
 import ArtistControlPanel from './Pages/Management/ArtistControlPanel';
 
 function AppShell() {
+  const { sidebarCollapsed, mobileSidebarOpen, closeMobileSidebar } = useUI();
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <Sidebar />
+      {mobileSidebarOpen && (
+        <div className="sidebar-backdrop" onClick={closeMobileSidebar} />
+      )}
       <HeaderNavigation />
       <main className="app-main">
         <Routes>
@@ -51,7 +57,9 @@ export default function App() {
     <ToastProvider>
       <AuthProvider>
         <AudioProvider>
-          <AppShell />
+          <UIProvider>
+            <AppShell />
+          </UIProvider>
         </AudioProvider>
       </AuthProvider>
     </ToastProvider>

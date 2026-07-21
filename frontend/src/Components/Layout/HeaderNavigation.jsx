@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContext';
+import { useUI } from '../../Context/UIContext';
 
 export default function HeaderNavigation() {
   const [q, setQ] = useState('');
@@ -8,6 +9,7 @@ export default function HeaderNavigation() {
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+  const { toggleMobileSidebar } = useUI();
 
   useEffect(() => {
     const onClick = (e) => {
@@ -24,6 +26,16 @@ export default function HeaderNavigation() {
 
   return (
     <header className="header-nav">
+      <button
+        className="hamburger-btn"
+        onClick={toggleMobileSidebar}
+        title="Toggle navigation"
+        aria-label="Toggle navigation"
+      >
+        <span />
+        <span />
+        <span />
+      </button>
       <form className="search-form" onSubmit={onSubmit}>
         <span>⌕</span>
         <input

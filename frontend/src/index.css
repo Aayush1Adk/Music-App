@@ -33,7 +33,9 @@
 
   /* --- Layout --- */
   --sidebar-w: 240px;
+  --sidebar-w-collapsed: 68px;
   --player-h: 88px;
+  --player-h-mobile: 72px;
   --header-h: 56px;
   --radius: 3px;
 }
@@ -97,6 +99,10 @@ button, input, select, textarea {
   grid-template-rows: var(--header-h) 1fr;
   height: 100vh;
   overflow: hidden;
+  transition: grid-template-columns 0.18s ease;
+}
+.app-shell.sidebar-collapsed {
+  grid-template-columns: var(--sidebar-w-collapsed) 1fr;
 }
 
 .app-main {
@@ -136,6 +142,7 @@ button, input, select, textarea {
   display: flex;
   flex-direction: column;
   padding: 12px 0;
+  overflow: hidden;
 }
 
 .sidebar-brand {
@@ -143,16 +150,43 @@ button, input, select, textarea {
   border-bottom: 1px solid var(--border-default);
   margin-bottom: 8px;
 }
+.sidebar-brand-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
 .sidebar-brand .logo {
   font-family: var(--font-display);
   color: var(--text-header);
   font-weight: 700;
   font-size: 17px;
   letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 .sidebar-brand .tagline {
   color: var(--text-muted);
   font-size: 11px;
+  white-space: nowrap;
+}
+
+.sidebar-collapse-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+.sidebar-collapse-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
 }
 
 .sidebar-section {
@@ -161,6 +195,7 @@ button, input, select, textarea {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 
 .sidebar-nav {
@@ -179,6 +214,7 @@ button, input, select, textarea {
   color: var(--text-primary);
   font-size: 13px;
   border: 1px solid transparent;
+  white-space: nowrap;
 }
 .sidebar-link:hover {
   background: var(--bg-surface-hover);
@@ -193,6 +229,9 @@ button, input, select, textarea {
 .sidebar-link .prompt-char {
   color: var(--text-secondary);
 }
+.sidebar-link-compact {
+  display: none;
+}
 
 .sidebar-footer {
   margin-top: auto;
@@ -200,6 +239,38 @@ button, input, select, textarea {
   border-top: 1px solid var(--border-default);
   font-size: 11px;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Collapsed (desktop icon-rail) state --- */
+.sidebar.collapsed .sidebar-brand-row {
+  flex-direction: column;
+  align-items: center;
+}
+.sidebar.collapsed .tagline,
+.sidebar.collapsed .sidebar-section {
+  display: none;
+}
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+}
+.sidebar.collapsed .sidebar-link-full {
+  display: none;
+}
+.sidebar.collapsed .sidebar-link-compact {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.sidebar.collapsed .sidebar-footer {
+  text-align: center;
+  padding: 10px 6px;
+}
+.sidebar.collapsed .sidebar-collapse-btn {
+  margin-top: 4px;
 }
 
 /* ==========================================================================
@@ -214,6 +285,32 @@ button, input, select, textarea {
   align-items: center;
   padding: 0 20px;
   gap: 16px;
+}
+
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 32px;
+  height: 32px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+.hamburger-btn span {
+  display: block;
+  width: 15px;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 1px;
+}
+.hamburger-btn:hover {
+  border-color: var(--border-strong);
 }
 
 .search-form {
@@ -549,12 +646,12 @@ button, input, select, textarea {
 
 .track-row {
   display: grid;
-  grid-template-columns: 32px 40px 1fr auto auto auto;
+  grid-template-columns: 34px 52px 1fr auto auto auto;
   align-items: center;
-  gap: 12px;
-  padding: 8px 10px;
+  gap: 14px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border-default);
-  font-size: 12px;
+  font-size: 13px;
 }
 .track-row:hover {
   background: var(--bg-surface-hover);
@@ -564,11 +661,11 @@ button, input, select, textarea {
   text-align: center;
 }
 .track-row .thumb {
-  width: 32px;
-  height: 32px;
+  width: 52px;
+  height: 52px;
   background: var(--bg-inset);
   border: 1px solid var(--border-default);
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
 }
 .track-row .thumb img {
@@ -587,7 +684,7 @@ button, input, select, textarea {
 }
 .track-row .meta .artist {
   color: var(--text-secondary);
-  font-size: 10px;
+  font-size: 11px;
 }
 .track-row .stat {
   color: var(--text-muted);
@@ -595,10 +692,18 @@ button, input, select, textarea {
 }
 .track-row .actions {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
 }
 .track-row.active .meta .title {
   color: var(--text-header);
+}
+
+/* Play button in the catalog gets a bit more presence than the other
+   row-level icon buttons (like/delete). */
+.track-row .btn-play {
+  padding: 8px 12px;
+  font-size: 15px;
 }
 
 /* ==========================================================================
@@ -618,6 +723,7 @@ button, input, select, textarea {
   align-items: center;
   padding: 0 16px;
   gap: 16px;
+  transition: left 0.18s ease, height 0.18s ease;
   z-index: 30;
 }
 
@@ -704,6 +810,7 @@ button, input, select, textarea {
    ========================================================================== */
 
 .auth-shell {
+  
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -898,4 +1005,319 @@ button, input, select, textarea {
   margin-top: 18px;
   font-size: 11px;
   color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Sidebar backdrop (mobile/tablet off-canvas drawer)
+   ========================================================================== */
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(1, 4, 9, 0.6);
+  z-index: 45;
+}
+
+/* ==========================================================================
+   Expand/collapse chevron button (used on the bottom player)
+   ========================================================================== */
+
+.btn-chevron {
+  color: var(--text-muted);
+}
+.btn-chevron:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Now playing -- expanded card
+   ========================================================================== */
+
+.now-playing-expanded {
+  position: fixed;
+  left: var(--sidebar-w);
+  right: 0;
+  top: var(--header-h);
+  bottom: var(--player-h);
+  background: var(--bg-deep);
+  border-left: 1px solid var(--border-default);
+  z-index: 35;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transition: left 0.18s ease;
+}
+
+.now-playing-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+.now-playing-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.now-playing-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px 20px 20px;
+  gap: 6px;
+}
+
+.now-playing-art {
+  width: min(320px, 60vw);
+  aspect-ratio: 1 / 1;
+  background: var(--bg-inset);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--border-strong);
+  font-size: 40px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 32px rgba(1, 4, 9, 0.5);
+}
+.now-playing-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.now-playing-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+.now-playing-artist {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.now-playing-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.now-playing-controls .btn-play-lg {
+  padding: 12px 18px;
+  font-size: 18px;
+}
+
+.up-next {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  background: var(--bg-surface);
+}
+.up-next:hover {
+  border-color: var(--text-secondary);
+}
+.up-next-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.up-next-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.up-next-row .thumb {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: var(--bg-inset);
+  border: 1px solid var(--border-default);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.up-next-row .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.up-next-row .info {
+  min-width: 0;
+}
+.up-next-row .title {
+  color: var(--text-primary);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.up-next-row .artist {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.now-playing-scrub {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+.now-playing-scrub .time {
+  font-size: 10px;
+  color: var(--text-muted);
+  min-width: 34px;
+}
+.now-playing-scrub input[type="range"] {
+  flex: 1;
+  accent-color: var(--text-header-strong);
+}
+
+.app-shell.sidebar-collapsed .now-playing-expanded {
+  left: var(--sidebar-w-collapsed);
+}
+.app-shell.sidebar-collapsed .bottom-player {
+  left: var(--sidebar-w-collapsed);
+}
+
+/* ==========================================================================
+   Responsive: tablets (<=1000px)
+   ========================================================================== */
+
+@media (max-width: 1000px) {
+  .app-shell,
+  .app-shell.sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .header-nav,
+  .app-main {
+    grid-column: 1;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(280px, 78vw);
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 8px 0 24px rgba(1, 4, 9, 0.5);
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  /* The desktop "collapsed / icon rail" mode doesn't apply once we're in
+     off-canvas drawer territory -- always show full labels in the drawer. */
+  .sidebar.collapsed {
+    width: min(280px, 78vw);
+  }
+  .sidebar.collapsed .sidebar-brand-row {
+    flex-direction: row;
+  }
+  .sidebar.collapsed .tagline,
+  .sidebar.collapsed .sidebar-section {
+    display: block;
+  }
+  .sidebar.collapsed .sidebar-link {
+    justify-content: flex-start;
+  }
+  .sidebar.collapsed .sidebar-link-full {
+    display: inline;
+  }
+  .sidebar.collapsed .sidebar-link-compact {
+    display: none;
+  }
+  .sidebar-collapse-btn {
+    display: none;
+  }
+
+  .bottom-player,
+  .app-shell.sidebar-collapsed .bottom-player {
+    left: 0;
+  }
+  .now-playing-expanded,
+  .app-shell.sidebar-collapsed .now-playing-expanded {
+    left: 0;
+    top: var(--header-h);
+  }
+
+  .bordered-grid.grid-6 { grid-template-columns: repeat(3, 1fr); }
+  .bordered-grid.grid-5 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ==========================================================================
+   Responsive: phones (<=640px)
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  :root {
+    --player-h: var(--player-h-mobile);
+  }
+
+  .app-main {
+    padding: 16px 12px calc(var(--player-h) + 16px) 12px;
+  }
+
+  .header-nav {
+    padding: 0 12px;
+    gap: 10px;
+  }
+  .search-form input {
+    padding: 7px 4px;
+  }
+
+  .bordered-grid.grid-6,
+  .bordered-grid.grid-5,
+  .bordered-grid.grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Bottom mini player: drop the volume control and tighten columns so it
+     still fits comfortably on a phone screen. */
+  .bottom-player {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "meta controls";
+    height: var(--player-h-mobile);
+    padding: 0 10px;
+    gap: 8px;
+  }
+  .player-track-meta { grid-area: meta; }
+  .player-center { grid-area: controls; }
+  .player-track-meta .info .artist { display: none; }
+  .player-scrub { display: none; }
+  .player-right { display: none; }
+  .player-controls { gap: 6px; }
+
+  .now-playing-art {
+    width: 72vw;
+  }
+  .now-playing-body {
+    padding: 20px 14px 14px 14px;
+  }
+  .now-playing-controls {
+    gap: 10px;
+  }
 }
