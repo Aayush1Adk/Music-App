@@ -6,7 +6,7 @@ export default function AlbumCoverCard({ album }) {
   return (
     <div className="album-card" onClick={() => navigate(`/album/${album._id || album.id}`)}>
       <div className="album-card-art">
-        {album.cover ? <img src={album.coverUri} alt={album.title} /> : <span>▦</span>}
+        {album.coverUri ? <img src={album.coverUri} alt={album.title} /> : <span>▦</span>}
       </div>
       <div className="album-card-body">
         <div className="album-card-title">{album.title}</div>

@@ -39,7 +39,7 @@ export default function AlbumView() {
       <PageHeading eyebrow="Album" title={album.title} />
       <div className="card" style={{ display: 'flex', gap: 20, padding: 20, marginBottom: 20 }}>
         <div className="album-card-art" style={{ width: 160, height: 160, flexShrink: 0 }}>
-          {album.cover ? <img src={album.coverUri} alt={album.title} /> : <span>▦</span>}
+          {album.coverUri ? <img src={album.coverUri} alt={album.title} /> : <span>▦</span>}
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ color: 'var(--text-secondary)', marginBottom: 10, fontSize: 14 }}>
