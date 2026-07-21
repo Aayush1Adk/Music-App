@@ -132,15 +132,15 @@ Create a `.env` file.
 ```env
 PORT=4000
 
-MONGODB_URI=your_mongodb_connection
+MONGODB_URI=my_mongodb_connection
 
-JWT_SECRET=your_secret_key
+JWT_SECRET=my_secret_key
 
-CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_CLOUD_NAME=my_cloud_name
 
-CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_KEY=my_api_key
 
-CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_API_SECRET=my_api_secret
 
 NODE_ENV=development
 ```
