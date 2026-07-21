@@ -49,7 +49,7 @@ export default function MusicView() {
             {(track.genres || []).map((g) => <span className="tag" key={g} style={{ marginRight: 6 }}>{g}</span>)}
           </div>
           <div style={{ color: 'var(--text-muted)', fontSize: 11, marginBottom: 14 }}>
-            {like.likesCount} likes · {track.playsCount ?? 0} plays
+            {like.likesCount} likes · {track.playCount ?? 0} plays
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <CustomButton variant="primary" onClick={() => playQueue([track], 0)}>

@@ -20,7 +20,7 @@ export default function TrackListItem({ track, index, queue, canDelete = false, 
         <div className="artist">{track.artist?.username || track.artistName || 'Unknown artist'}</div>
       </div>
       <div className="stat">{like.likesCount} likes</div>
-      <div className="stat">{track.playsCount ?? 0} plays</div>
+      <div className="stat">{track.playCount ?? 0} plays</div>
       <div className="actions">
         <button className="btn btn-icon" onClick={() => playQueue(queue || [track], index ?? 0)} title="Play">▶</button>
         <button
